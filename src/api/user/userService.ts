@@ -31,18 +31,15 @@ export class UserService {
     }
   }
 
-  // Retrieves a single user by their ID
-  async findById(id: number): Promise<ServiceResponse<User | null>> {
+  // Registers a new user
+  async registerUser(data: User): Promise<ServiceResponse<User | null>> {
     try {
-      const user = await this.userRepository.findByIdAsync(id);
-      if (!user) {
-        return ServiceResponse.failure("User not found", null, StatusCodes.NOT_FOUND);
-      }
-      return ServiceResponse.success<User>("User found", user);
+      const newUser = await this.userRepository.createUser(data);
+      return ServiceResponse.success<User>("User created successfully", newUser);
     } catch (ex) {
-      const errorMessage = `Error finding user with id ${id}:, ${(ex as Error).message}`;
+      const errorMessage = `Error creating user: ${(ex as Error).message}`;
       logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while finding user.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.failure("An error occurred while creating user.", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 }

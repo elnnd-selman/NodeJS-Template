@@ -29,4 +29,21 @@ userRegistry.registerPath({
   responses: createApiResponse(UserSchema, "Success"),
 });
 
-userRouter.get("/:id", validateRequest(GetUserSchema), userController.getUser);
+// Adding a POST endpoint as an example for request body
+userRegistry.registerPath({
+  method: "post",
+  path: "/users/register",
+  tags: ["User"],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: UserSchema,
+        },
+      },
+    },
+  },
+  responses: createApiResponse(UserSchema, "User created successfully"),
+});
+
+userRouter.post("/register", validateRequest(UserSchema), userController.registerUser);
